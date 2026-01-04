@@ -11,6 +11,9 @@ const logger = require('morgan');
 //Controllers
 const authCtrl = require('./controllers/auth')
 
+// Middleware
+const verifyToken = require('./middleware/verify-token');
+
 mongoose.connect(process.env.MONGODB_URI);
 
 mongoose.connection.on('connected', () => {
@@ -27,7 +30,12 @@ app.use('/auth',authCtrl);
 
 
 // ---------- PROTECTED ROUTES ----------
+app.use(verifyToken);
 
+app.get('/test', (req,res) =>{
+  console.log(req.user);
+  res.status(200).json({message: "You are logged in!"})
+})
 
 
 
